@@ -36,24 +36,24 @@ type DockPortal struct {
 }
 
 // ListDocks
-func (d *DockPortal) ListDocks() {
-	if !policy.Authorize(d.Ctx, "dock:list") {
+func (this *DockPortal) ListDocks() {
+	if !policy.Authorize(this.Ctx, "dock:list") {
 		return
 	}
 	// Call db api module to handle list docks request.
-	m, err := d.GetParameters()
+	m, err := this.GetParameters()
 	if err != nil {
 		reason := fmt.Sprintf("List docks failed: %s", err.Error())
-		d.Ctx.Output.SetStatus(model.ErrorBadRequest)
-		d.Ctx.Output.Body(model.ErrorBadRequestStatus(reason))
+		this.Ctx.Output.SetStatus(model.ErrorBadRequest)
+		this.Ctx.Output.Body(model.ErrorBadRequestStatus(reason))
 		log.Error(reason)
 		return
 	}
-	result, err := db.C.ListDocksWithFilter(c.GetContext(d.Ctx), m)
+	result, err := db.C.ListDocksWithFilter(c.GetContext(this.Ctx), m)
 	if err != nil {
 		reason := fmt.Sprintf("List docks failed: %s", err.Error())
-		d.Ctx.Output.SetStatus(model.ErrorBadRequest)
-		d.Ctx.Output.Body(model.ErrorBadRequestStatus(reason))
+		this.Ctx.Output.SetStatus(model.ErrorBadRequest)
+		this.Ctx.Output.Body(model.ErrorBadRequestStatus(reason))
 		log.Error(reason)
 		return
 	}
@@ -62,28 +62,28 @@ func (d *DockPortal) ListDocks() {
 	body, err := json.Marshal(result)
 	if err != nil {
 		reason := fmt.Sprintf("Marshal docks failed: %s", err.Error())
-		d.Ctx.Output.SetStatus(model.ErrorInternalServer)
-		d.Ctx.Output.Body(model.ErrorInternalServerStatus(reason))
+		this.Ctx.Output.SetStatus(model.ErrorInternalServer)
+		this.Ctx.Output.Body(model.ErrorInternalServerStatus(reason))
 		log.Error(reason)
 		return
 	}
 
-	d.Ctx.Output.SetStatus(StatusOK)
-	d.Ctx.Output.Body(body)
+	this.Ctx.Output.SetStatus(StatusOK)
+	this.Ctx.Output.Body(body)
 	return
 }
 
 // GetDock
-func (d *DockPortal) GetDock() {
-	if !policy.Authorize(d.Ctx, "dock:get") {
+func (this *DockPortal) GetDock() {
+	if !policy.Authorize(this.Ctx, "dock:get") {
 		return
 	}
-	id := d.Ctx.Input.Param(":dockId")
-	result, err := db.C.GetDock(c.GetContext(d.Ctx), id)
+	id := this.Ctx.Input.Param(":dockId")
+	result, err := db.C.GetDock(c.GetContext(this.Ctx), id)
 	if err != nil {
 		reason := fmt.Sprintf("Get dock failed: %s", err.Error())
-		d.Ctx.Output.SetStatus(model.ErrorBadRequest)
-		d.Ctx.Output.Body(model.ErrorBadRequestStatus(reason))
+		this.Ctx.Output.SetStatus(model.ErrorBadRequest)
+		this.Ctx.Output.Body(model.ErrorBadRequestStatus(reason))
 		log.Error(reason)
 		return
 	}
@@ -92,13 +92,13 @@ func (d *DockPortal) GetDock() {
 	body, err := json.Marshal(result)
 	if err != nil {
 		reason := fmt.Sprintf("Marshal dock failed: %s", err.Error())
-		d.Ctx.Output.SetStatus(model.ErrorInternalServer)
-		d.Ctx.Output.Body(model.ErrorInternalServerStatus(reason))
+		this.Ctx.Output.SetStatus(model.ErrorInternalServer)
+		this.Ctx.Output.Body(model.ErrorInternalServerStatus(reason))
 		log.Error(reason)
 		return
 	}
 
-	d.Ctx.Output.SetStatus(StatusOK)
-	d.Ctx.Output.Body(body)
+	this.Ctx.Output.SetStatus(StatusOK)
+	this.Ctx.Output.Body(body)
 	return
 }

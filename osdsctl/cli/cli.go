@@ -21,7 +21,6 @@ package cli
 import (
 	"fmt"
 	"log"
-	"net/url"
 	"os"
 
 	c "github.com/opensds/opensds/client"
@@ -83,13 +82,7 @@ func Run() error {
 		return fmt.Errorf("ERROR: You must provide the endpoint by setting " +
 			"the environment variable OPENSDS_ENDPOINT")
 	}
-
 	cfg := &c.Config{Endpoint: ep}
-
-	u, _ := url.Parse(ep)
-	if u.Scheme == "https" {
-		cfg.CACert = constants.OpensdsCaCertFile
-	}
 
 	authStrategy, ok := os.LookupEnv(c.OpensdsAuthStrategy)
 	if !ok {
@@ -107,10 +100,6 @@ func Run() error {
 	}
 
 	client = c.NewClient(cfg)
-
-	if client == nil {
-		return fmt.Errorf("ERROR: osdsctl client is nil.")
-	}
 
 	return rootCommand.Execute()
 }

@@ -263,7 +263,6 @@ func TestExtendVolume(t *testing.T) {
 	var vol2 = &SampleVolumes[0]
 	mockClient := new(dbtest.Client)
 	mockClient.On("GetVolume", context.NewAdminContext(), vol.Id).Return(vol, nil)
-	mockClient.On("UpdateVolume", context.NewAdminContext(), vol).Return(vol, nil)
 	mockClient.On("GetPool", context.NewAdminContext(), vol.PoolId).Return(&SamplePools[0], nil)
 	mockClient.On("GetDefaultProfile", context.NewAdminContext()).Return(&SampleProfiles[0], nil)
 	mockClient.On("GetProfile", context.NewAdminContext(), vol.ProfileId).Return(&SampleProfiles[0], nil)
@@ -282,13 +281,14 @@ func TestExtendVolume(t *testing.T) {
 	newSize := int64(1)
 	var errchan = make(chan error, 1)
 	c.ExtendVolume(context.NewAdminContext(), vol.Id, newSize, errchan)
-	expectedError := "New size for extend must be greater than current size.(current: 1 GB, extended: 1 GB)."
-	err := <-errchan
-	if err == nil {
+	expectedError := "new size(1) <= old size(1)"
+
+	if err := <-errchan; err == nil {
 		t.Errorf("Expected Non-%v, got %v\n", nil, err)
-	}
-	if expectedError != err.Error() {
-		t.Errorf("Expected Non-%v, got %v\n", expectedError, err.Error())
+	} else {
+		if expectedError != err.Error() {
+			t.Errorf("Expected Non-%v, got %v\n", expectedError, err.Error())
+		}
 	}
 
 	newSize = int64(92)

@@ -25,7 +25,6 @@ import (
 	"github.com/astaxie/beego/httplib"
 	log "github.com/golang/glog"
 	pb "github.com/opensds/opensds/pkg/dock/proto"
-	"github.com/opensds/opensds/pkg/utils/pwd"
 )
 
 type ArrayInnerError struct {
@@ -59,21 +58,13 @@ type DoradoClient struct {
 
 func NewClient(opt *AuthOptions) (*DoradoClient, error) {
 	endpoints := strings.Split(opt.Endpoints, ",")
-	// Decrypte the password
-	pwdCiphertext := opt.Password
-	pwdTool := pwd.NewPwdTool(opt.PasswordTool)
-	pwd, err := pwdTool.Decrypter(pwdCiphertext)
-	if err != nil {
-		return nil, err
-	}
-
 	c := &DoradoClient{
 		user:      opt.Username,
-		passwd:    pwd,
+		passwd:    opt.Password,
 		endpoints: endpoints,
 		insecure:  opt.Insecure,
 	}
-	err = c.login()
+	err := c.login()
 	return c, err
 }
 
@@ -685,7 +676,7 @@ func (c *DoradoClient) DoMapping(lunId, hostGrpId, hostId string) error {
 		}
 	}
 
-	log.Infof("DoMapping successfully, with params lunId:%s, hostGrpId:%s, hostId:%s",
+	log.Infof("DoMapping sucessufully, with params lunId:%s, hostGrpId:%s, hostId:%s",
 		lunId, lunGrpId, hostId)
 	return nil
 }
@@ -1059,8 +1050,8 @@ func (c *DoradoClient) ListRemoteDevices() (*[]RemoteDevice, error) {
 	dev := &RemoteDevicesResp{}
 	err := c.request("GET", "/remote_device", nil, dev)
 	if err != nil {
-		log.Error("List remote devices failed,", err)
 		return nil, err
+		log.Error("List remote devices failed,", err)
 	}
 	return &dev.Data, nil
 }
@@ -1145,7 +1136,7 @@ func (c *DoradoClient) GetHostOnlineFCInitiators(hostId string) ([]string, error
 			}
 		}
 	}
-	log.Infof("Get host online fc initiators from host %s success.", hostId)
+	log.Infof("Get host online fc initiators from host %s sucess.", hostId)
 	return initiators, nil
 }
 
@@ -1166,7 +1157,7 @@ func (c *DoradoClient) GetOnlineFreeWWNs() ([]string, error) {
 		}
 	}
 
-	log.Infof("Get online free wwns success.")
+	log.Infof("Get online free wwns sucess.")
 	return wwns, nil
 }
 
@@ -1185,7 +1176,7 @@ func (c *DoradoClient) GetOnlineFCInitiatorOnArray() ([]string, error) {
 		}
 	}
 
-	log.Infof("Get online fc initiators success.")
+	log.Infof("Get online fc initiators sucess.")
 	return fcInitiators, nil
 }
 
@@ -1225,7 +1216,7 @@ func (c *DoradoClient) GetHostIscsiInitiators(hostId string) ([]string, error) {
 		}
 	}
 
-	log.Infof("Get host iscsi initiators success.")
+	log.Infof("Get host iscsi initiators sucess.")
 	return initiators, nil
 }
 
@@ -1343,7 +1334,7 @@ func (c *DoradoClient) getObjCountFromLungroupByType(lunGroupId, lunType string)
 		return 0, nil
 	}
 
-	return resp.Data.Count, nil
+	return resp.Data.count, nil
 }
 
 var (
@@ -1373,7 +1364,7 @@ func (c *DoradoClient) getHostGroupNumFromHost(hostId string) (int, error) {
 		return 0, err
 	}
 
-	return resp.Data.Count, nil
+	return resp.Data.count, nil
 }
 
 func (c *DoradoClient) removeFCFromHost(wwn string) error {

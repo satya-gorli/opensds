@@ -120,6 +120,8 @@ func Unmarshal(data []byte, v interface{}) error {
 		return unmarshalSlice(string(data), rv)
 	case reflect.Struct:
 		return unmarshalStruct(string(data), rv)
+	default:
+		return fmt.Errorf("unsupported type: %s", rv.Kind())
 	}
-	return fmt.Errorf("unsupported type: %s", rv.Kind())
+	return nil
 }

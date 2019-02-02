@@ -306,7 +306,7 @@ type ReplicationPair struct {
 	RemoteDeviceSn      string `json:"REMOTEDEVICESN"`
 	RemoteResId         string `json:"REMOTERESID"`
 	RemoteResName       string `json:"REMOTERESNAME"`
-	ReplicationMode     string `json:"REPLICATIONMODEL"`
+	replicationMode     string `json:"REPLICATIONMODEL"`
 	ReplicationProgress string `json:"REPLICATIONPROGRESS"`
 	RunningStatus       string `json:"RUNNINGSTATUS"`
 	SecResAccess        string `json:"SECRESACCESS"`
@@ -364,5 +364,5 @@ type ObjCount struct {
 }
 
 type data struct {
-	Count int `json:"COUNT"`
+	count int `json:"COUNT"`
 }

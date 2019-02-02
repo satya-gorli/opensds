@@ -71,7 +71,6 @@ osds::uninstall_purge(){
     rm /etc/opensds -rf
     rm /var/log/opensds -rf
     rm /etc/bash_completion.d/osdsctl.bash_completion -rf
-    rm /opt/opensds-security -rf
 }
 
 case "$# $*" in

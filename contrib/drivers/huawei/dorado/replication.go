@@ -139,8 +139,9 @@ func (r *ReplicationDriver) FailoverReplication(opt *pb.FailoverReplicationOpts)
 	}
 	if opt.SecondaryBackendId == model.ReplicationDefaultBackendId {
 		return r.mgr.Failover(pairId)
+	} else {
+		return r.mgr.Failback(pairId)
 	}
-	return r.mgr.Failback(pairId)
 }
 
 func NewReplicaPairMgr(conf *DoradoConfig) (r *ReplicaPairMgr, err error) {
@@ -248,8 +249,10 @@ func (r *ReplicaPairMgr) DeletePair(id string) error {
 		return err
 	}
 
-	err := r.localOp.Delete(id)
-	return err
+	if err := r.localOp.Delete(id); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (r *ReplicaPairMgr) CreateReplication(localLunId, rmtLunId, replicationMode string, replicaPeriod string) (map[string]string, error) {
@@ -359,7 +362,7 @@ func (r *ReplicaCommonDriver) Sync(replicaId string, waitComplete bool) error {
 		ReplicaRunningStatusSync,
 		ReplicaRunningStatusInitialSync,
 	}
-	if replicaPair.ReplicationMode == ReplicaSyncMode && r.op.isRunningStatus(expectStatus, replicaPair) {
+	if replicaPair.replicationMode == ReplicaSyncMode && r.op.isRunningStatus(expectStatus, replicaPair) {
 		return nil
 	}
 	if err := r.op.Sync(replicaId); err != nil {
@@ -457,8 +460,10 @@ func (r *ReplicaCommonDriver) Failover(replicaId string) error {
 	if err := r.Split(replicaId); err != nil {
 		return err
 	}
-	err = r.op.UnprotectSecond(replicaId)
-	return err
+	if err := r.op.UnprotectSecond(replicaId); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (r *ReplicaCommonDriver) WaitReplicaReady(replicaId string) error {

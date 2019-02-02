@@ -34,15 +34,15 @@ type PoolPortal struct {
 	BasePortal
 }
 
-func (p *PoolPortal) ListAvailabilityZones() {
-	if !policy.Authorize(p.Ctx, "availability_zone:list") {
+func (this *PoolPortal) ListAvailabilityZones() {
+	if !policy.Authorize(this.Ctx, "availability_zone:list") {
 		return
 	}
-	azs, err := db.C.ListAvailabilityZones(c.GetContext(p.Ctx))
+	azs, err := db.C.ListAvailabilityZones(c.GetContext(this.Ctx))
 	if err != nil {
 		reason := fmt.Sprintf("Get AvailabilityZones for pools failed: %s", err.Error())
-		p.Ctx.Output.SetStatus(model.ErrorBadRequest)
-		p.Ctx.Output.Body(model.ErrorBadRequestStatus(reason))
+		this.Ctx.Output.SetStatus(model.ErrorBadRequest)
+		this.Ctx.Output.Body(model.ErrorBadRequestStatus(reason))
 		log.Error(reason)
 		return
 	}
@@ -50,36 +50,36 @@ func (p *PoolPortal) ListAvailabilityZones() {
 	body, err := json.Marshal(azs)
 	if err != nil {
 		reason := fmt.Sprintf("Marshal AvailabilityZones failed: %s", err.Error())
-		p.Ctx.Output.SetStatus(model.ErrorInternalServer)
-		p.Ctx.Output.Body(model.ErrorInternalServerStatus(reason))
+		this.Ctx.Output.SetStatus(model.ErrorInternalServer)
+		this.Ctx.Output.Body(model.ErrorInternalServerStatus(reason))
 		log.Error(reason)
 		return
 	}
 
-	p.Ctx.Output.SetStatus(StatusOK)
-	p.Ctx.Output.Body(body)
+	this.Ctx.Output.SetStatus(StatusOK)
+	this.Ctx.Output.Body(body)
 	return
 }
 
-func (p *PoolPortal) ListPools() {
-	if !policy.Authorize(p.Ctx, "pool:list") {
+func (this *PoolPortal) ListPools() {
+	if !policy.Authorize(this.Ctx, "pool:list") {
 		return
 	}
 	// Call db api module to handle list pools request.
-	m, err := p.GetParameters()
+	m, err := this.GetParameters()
 	if err != nil {
 		reason := fmt.Sprintf("List pools failed: %s", err.Error())
-		p.Ctx.Output.SetStatus(model.ErrorBadRequest)
-		p.Ctx.Output.Body(model.ErrorBadRequestStatus(reason))
+		this.Ctx.Output.SetStatus(model.ErrorBadRequest)
+		this.Ctx.Output.Body(model.ErrorBadRequestStatus(reason))
 		log.Error(reason)
 		return
 	}
 
-	result, err := db.C.ListPoolsWithFilter(c.GetContext(p.Ctx), m)
+	result, err := db.C.ListPoolsWithFilter(c.GetContext(this.Ctx), m)
 	if err != nil {
 		reason := fmt.Sprintf("List pools failed: %s", err.Error())
-		p.Ctx.Output.SetStatus(model.ErrorBadRequest)
-		p.Ctx.Output.Body(model.ErrorBadRequestStatus(reason))
+		this.Ctx.Output.SetStatus(model.ErrorBadRequest)
+		this.Ctx.Output.Body(model.ErrorBadRequestStatus(reason))
 		log.Error(reason)
 		return
 	}
@@ -88,27 +88,27 @@ func (p *PoolPortal) ListPools() {
 	body, err := json.Marshal(result)
 	if err != nil {
 		reason := fmt.Sprintf("Marshal pools failed: %s", err.Error())
-		p.Ctx.Output.SetStatus(model.ErrorInternalServer)
-		p.Ctx.Output.Body(model.ErrorInternalServerStatus(reason))
+		this.Ctx.Output.SetStatus(model.ErrorInternalServer)
+		this.Ctx.Output.Body(model.ErrorInternalServerStatus(reason))
 		log.Error(reason)
 		return
 	}
 
-	p.Ctx.Output.SetStatus(StatusOK)
-	p.Ctx.Output.Body(body)
+	this.Ctx.Output.SetStatus(StatusOK)
+	this.Ctx.Output.Body(body)
 	return
 }
 
-func (p *PoolPortal) GetPool() {
-	if !policy.Authorize(p.Ctx, "pool:get") {
+func (this *PoolPortal) GetPool() {
+	if !policy.Authorize(this.Ctx, "pool:get") {
 		return
 	}
-	id := p.Ctx.Input.Param(":poolId")
-	result, err := db.C.GetPool(c.GetContext(p.Ctx), id)
+	id := this.Ctx.Input.Param(":poolId")
+	result, err := db.C.GetPool(c.GetContext(this.Ctx), id)
 	if err != nil {
 		reason := fmt.Sprintf("Get pool failed: %s", err.Error())
-		p.Ctx.Output.SetStatus(model.ErrorBadRequest)
-		p.Ctx.Output.Body(model.ErrorBadRequestStatus(reason))
+		this.Ctx.Output.SetStatus(model.ErrorBadRequest)
+		this.Ctx.Output.Body(model.ErrorBadRequestStatus(reason))
 		log.Error(reason)
 		return
 	}
@@ -117,13 +117,13 @@ func (p *PoolPortal) GetPool() {
 	body, err := json.Marshal(result)
 	if err != nil {
 		reason := fmt.Sprintf("Marshal pool failed: %s", err.Error())
-		p.Ctx.Output.SetStatus(model.ErrorInternalServer)
-		p.Ctx.Output.Body(model.ErrorInternalServerStatus(reason))
+		this.Ctx.Output.SetStatus(model.ErrorInternalServer)
+		this.Ctx.Output.Body(model.ErrorInternalServerStatus(reason))
 		log.Error(reason)
 		return
 	}
 
-	p.Ctx.Output.SetStatus(StatusOK)
-	p.Ctx.Output.Body(body)
+	this.Ctx.Output.SetStatus(StatusOK)
+	this.Ctx.Output.Body(body)
 	return
 }

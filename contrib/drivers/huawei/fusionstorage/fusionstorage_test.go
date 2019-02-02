@@ -103,7 +103,7 @@ func TestSetup(t *testing.T) {
 	f := Driver{}
 	c.CONF.OsdsDock.Backends.HuaweiFusionStorage.ConfigPath = "./testdata/fusionstorage.yaml"
 	respMap := map[string]*FakeResp{
-		"startServer": {startServer, nil},
+		"startServer": &FakeResp{startServer, nil},
 	}
 	baseExecuter = NewFakeExecuter(respMap)
 	rootExecuter = NewFakeExecuter(respMap)
@@ -118,7 +118,7 @@ func TestSetup(t *testing.T) {
 			},
 		},
 		Pool: map[string]config.PoolProperties{
-			"0": {
+			"0": config.PoolProperties{
 				StorageType:      "block",
 				AvailabilityZone: "nova-01",
 				Extras: model.StoragePoolExtraSpec{
@@ -167,8 +167,8 @@ func TestCreateVolume(t *testing.T) {
 	f := Driver{}
 	c.CONF.OsdsDock.Backends.HuaweiFusionStorage.ConfigPath = "./testdata/fusionstorage.yaml"
 	respMap := map[string]*FakeResp{
-		"startServer":  {startServer, nil},
-		"createVolume": {createVolume, nil},
+		"startServer":  &FakeResp{startServer, nil},
+		"createVolume": &FakeResp{createVolume, nil},
 	}
 	baseExecuter = NewFakeExecuter(respMap)
 	rootExecuter = NewFakeExecuter(respMap)
@@ -202,8 +202,8 @@ func TestCreateVolumeFromSnapshot(t *testing.T) {
 	f := Driver{}
 	c.CONF.OsdsDock.Backends.HuaweiFusionStorage.ConfigPath = "./testdata/fusionstorage.yaml"
 	respMap := map[string]*FakeResp{
-		"startServer":          {startServer, nil},
-		"createVolumeFromSnap": {createVolumeFromSnap, nil},
+		"startServer":          &FakeResp{startServer, nil},
+		"createVolumeFromSnap": &FakeResp{createVolumeFromSnap, nil},
 	}
 	baseExecuter = NewFakeExecuter(respMap)
 	rootExecuter = NewFakeExecuter(respMap)
@@ -239,8 +239,8 @@ func TestDeleteVolume(t *testing.T) {
 	f := Driver{}
 	c.CONF.OsdsDock.Backends.HuaweiFusionStorage.ConfigPath = "./testdata/fusionstorage.yaml"
 	respMap := map[string]*FakeResp{
-		"startServer":  {startServer, nil},
-		"deleteVolume": {deleteVolume, nil},
+		"startServer":  &FakeResp{startServer, nil},
+		"deleteVolume": &FakeResp{deleteVolume, nil},
 	}
 	baseExecuter = NewFakeExecuter(respMap)
 	rootExecuter = NewFakeExecuter(respMap)
@@ -272,8 +272,8 @@ func TestCreateSnapshot(t *testing.T) {
 	f := Driver{}
 	c.CONF.OsdsDock.Backends.HuaweiFusionStorage.ConfigPath = "./testdata/fusionstorage.yaml"
 	respMap := map[string]*FakeResp{
-		"startServer":    {startServer, nil},
-		"createSnapshot": {createSnapshot, nil},
+		"startServer":    &FakeResp{startServer, nil},
+		"createSnapshot": &FakeResp{createSnapshot, nil},
 	}
 	baseExecuter = NewFakeExecuter(respMap)
 	rootExecuter = NewFakeExecuter(respMap)
@@ -306,8 +306,8 @@ func TestDeleteSnapshot(t *testing.T) {
 	f := Driver{}
 	c.CONF.OsdsDock.Backends.HuaweiFusionStorage.ConfigPath = "./testdata/fusionstorage.yaml"
 	respMap := map[string]*FakeResp{
-		"startServer":    {startServer, nil},
-		"deleteSnapshot": {deleteSnapshot, nil},
+		"startServer":    &FakeResp{startServer, nil},
+		"deleteSnapshot": &FakeResp{deleteSnapshot, nil},
 	}
 	baseExecuter = NewFakeExecuter(respMap)
 	rootExecuter = NewFakeExecuter(respMap)
@@ -341,8 +341,8 @@ func TestListPool(t *testing.T) {
 	f := Driver{}
 	c.CONF.OsdsDock.Backends.HuaweiFusionStorage.ConfigPath = "./testdata/fusionstorage.yaml"
 	respMap := map[string]*FakeResp{
-		"startServer":      {startServer, nil},
-		"queryAllPoolInfo": {queryAllPoolInfo, nil},
+		"startServer":      &FakeResp{startServer, nil},
+		"queryAllPoolInfo": &FakeResp{queryAllPoolInfo, nil},
 	}
 	baseExecuter = NewFakeExecuter(respMap)
 	rootExecuter = NewFakeExecuter(respMap)
@@ -352,7 +352,7 @@ func TestListPool(t *testing.T) {
 		t.Errorf("List pool failed: %v", err)
 	}
 	expect := []*model.StoragePoolSpec{
-		{
+		&model.StoragePoolSpec{
 			BaseModel: &model.BaseModel{
 				Id: resp[0].Id,
 			},
@@ -377,7 +377,7 @@ func TestListPool(t *testing.T) {
 				},
 			},
 		},
-		{
+		&model.StoragePoolSpec{
 			BaseModel: &model.BaseModel{
 				Id: resp[1].Id,
 			},
