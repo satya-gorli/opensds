@@ -21,12 +21,10 @@ import (
 
 	"github.com/opensds/opensds/contrib/connector"
 	_ "github.com/opensds/opensds/contrib/connector/iscsi"
-	_ "github.com/opensds/opensds/contrib/connector/nvmeof"
 )
 
 const (
-	iscsiProtocol  = "iscsi"
-	nvmeofProtocol = "nvmeof"
+	iscsiProtocol = "iscsi"
 
 	attachCommand = "attach"
 	detachCommand = "detach"
@@ -43,19 +41,17 @@ func main() {
 		os.Exit(-1)
 	}
 
-	accPro := os.Args[3]
 	switch os.Args[1] {
 	case attachCommand:
-		dev, err := connector.NewConnector(accPro).Attach(connData)
+		dev, err := connector.NewConnector(iscsiProtocol).Attach(connData)
 		if err != nil {
 			fmt.Println("Failed to attach volume to the host:", err)
 			os.Exit(-1)
 		}
 		fmt.Println("Got device:", dev)
 		break
-
 	case detachCommand:
-		if err := connector.NewConnector(accPro).Detach(connData); err != nil {
+		if err := connector.NewConnector(iscsiProtocol).Detach(connData); err != nil {
 			fmt.Println("Failed to detach volume to the host:", err)
 			os.Exit(-1)
 		}

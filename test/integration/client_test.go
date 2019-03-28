@@ -26,13 +26,9 @@ import (
 	. "github.com/opensds/opensds/testutils/collection"
 )
 
-var c *client.Client
-
-func init() {
-	c, _ = client.NewClient(&client.Config{
-		Endpoint:    "http://localhost:50040",
-		AuthOptions: client.NewNoauthOptions(constants.DefaultTenantId)})
-}
+var c = client.NewClient(&client.Config{
+	Endpoint:    "http://localhost:50040",
+	AuthOptions: client.NewNoauthOptions(constants.DefaultTenantId)})
 
 func TestClientCreateProfile(t *testing.T) {
 	var body = &model.ProfileSpec{
