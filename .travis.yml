@@ -43,7 +43,7 @@ install:
   - go get github.com/mattn/goveralls
   - go get github.com/wadey/gocovmerge
   # Build OpenSDS Controller source code
-  - make all
+
 jobs:
     include:
       - stage: "Test Jobs"                # naming the Tests stage
